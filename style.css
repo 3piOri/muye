@@ -165,7 +165,7 @@ a {
     color: rgba(0, 0, 0, 0.5);
     font-size: 1.2rem;
     margin-bottom: 2rem;
-    line-height: 0;
+    line-height: 1;
 }
 
 .btn-primary {
@@ -208,11 +208,20 @@ a {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 100px 700px;
+    justify-items: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.product-card instagram-product:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
 
 .product-card {
+    width: 32rem;
     height: 46rem;
     background-color: var(--bg-card);
     border-radius: 16px;
@@ -357,7 +366,7 @@ a {
 .about-container p {
     color: var(--text-secondary);
     margin-bottom: 2rem;
-    line-height: 1.2;
+    line-height:1.5;
 }
 
 .btn-secondary {
