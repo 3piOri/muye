@@ -232,7 +232,10 @@ a {
 }
 
 .section-title p {
-    color:rgba(0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1;
 }
 
 .products-grid {
@@ -535,6 +538,12 @@ footer {
 
     .section-title h2 {
         font-size: 2rem;
+        position: relative;
+        top: -0.4rem;
+        margin-bottom: 0.35rem;
+    }
+    .section-title p {
+        font-size: 1.05rem;
     }
 
     .products-grid {
