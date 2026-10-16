@@ -1,11 +1,35 @@
 const productsGrid = document.querySelector("#products-grid");
 const products = window.servicesData && window.servicesData.products;
-const whatsappUrls = [
-    "https://wa.me/5212345678?text=Hola!%20Me%20interesa%20comprar%20el%20Hoodie%20Oversize%20Muyë%20Vision",
-    "https://wa.me/5212345678?text=Hola!%20Me%20interesa%20comprar%20la%20Playera%20Sakura%20Cyber",
-    "https://wa.me/5212345678?text=Hola!%20Me%20interesa%20comprar%20la%20Gorra%20Mu%20Embroidered",
-    "https://wa.me/5212345678?text=Hola!%20Me%20interesa%20comprar%20la%20kakera%20Canvas"
-];
+const menuToggle = document.querySelector(".menu-toggle");
+const navLinks = document.querySelector("#nav-links");
+
+if (menuToggle && navLinks) {
+    const closeMenu = () => {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Abrir menú");
+        navLinks.classList.remove("is-open");
+    };
+
+    menuToggle.addEventListener("click", () => {
+        const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+        menuToggle.setAttribute("aria-label", isExpanded ? "Abrir menú" : "Cerrar menú");
+        navLinks.classList.toggle("is-open", !isExpanded);
+    });
+
+    navLinks.addEventListener("click", (event) => {
+        if (event.target instanceof Element && event.target.closest("a")) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMenu();
+            menuToggle.focus();
+        }
+    });
+}
 
 if (!productsGrid) {
     throw new Error('No se encontró el contenedor "#products-grid".');
@@ -15,7 +39,7 @@ if (!Array.isArray(products)) {
     throw new Error("No se encontró una lista válida de productos en services-data.js.");
 }
 
-function createProductCard(product, whatsappUrl) {
+function createProductCard(product) {
     const card = document.createElement("div");
     card.className = "product-card";
 
@@ -50,7 +74,7 @@ function createProductCard(product, whatsappUrl) {
     description.textContent = product.description;
 
     const orderButton = document.createElement("a");
-    orderButton.href = whatsappUrl;
+    orderButton.href = product.whatsappUrl;
     orderButton.className = "btn-ws";
     orderButton.target = "_blank";
 
@@ -64,8 +88,8 @@ function createProductCard(product, whatsappUrl) {
     return card;
 }
 
-products.forEach((product, index) => {
-    const requiredFields = ["image", "name", "description", "price"];
+products.forEach((product) => {
+    const requiredFields = ["image", "name", "description", "price", "whatsappUrl"];
     const missingField = requiredFields.find((field) => (
         typeof product[field] !== "string" || product[field].trim() === ""
     ));
@@ -74,11 +98,5 @@ products.forEach((product, index) => {
         throw new Error(`Falta el campo "${missingField}" en un producto de services-data.js.`);
     }
 
-    const whatsappUrl = whatsappUrls[index];
-
-    if (!whatsappUrl) {
-        throw new Error(`Falta el enlace de WhatsApp para el producto ${index + 1} en script.js.`);
-    }
-
-    productsGrid.append(createProductCard(product, whatsappUrl));
+    productsGrid.append(createProductCard(product));
 });
