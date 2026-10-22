@@ -252,6 +252,15 @@ a {
     line-height: 1.2; /* Asegura una proporción vertical correcta con el texto */
 }
 
+.hero-content > span.badge,
+.hero-content a.badge[href] {
+    border: 3px solid transparent;
+    background:
+        linear-gradient(#222530, #222530) padding-box,
+        conic-gradient(from var(--a), #4a6e18, #dff7e5, #4a6e18) border-box;
+    animation: spin 4s linear infinite;
+}
+
 .hero h1 {
     font-family: 'Numbskull', sans-serif;
     color: rgba(0, 0, 0, 0.6);
