@@ -24,7 +24,7 @@ window.servicesData = {
             whatsappUrl: "https://wa.me/525550648075?text=Hola!%20Me%20interesa%20comprar%20la%20Gorra%20Mu%20Embroidered"
         },
         {
-            image: "sin.png",
+            image: "1.png",
             name: 'Kakera "Muyë Dream"',
             description: "Bolsa de tela de alta resistencia perfecta para uso diario.",
             price: "$1,220 MXN",
