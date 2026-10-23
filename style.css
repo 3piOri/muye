@@ -263,7 +263,7 @@ a {
 
 .hero h1 {
     font-family: 'Numbskull', sans-serif;
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.753);
     font-size: 3.5rem;
     margin: 1.5rem 0 1rem;
     line-height: 1.1;
@@ -279,6 +279,7 @@ a {
     font-size: 1.2rem;
     margin-bottom: 2rem;
     line-height: 1;
+    font-weight: bolder;
 }
 
 /* 1. Definimos la propiedad personalizada para que el navegador sepa animar el ángulo */
@@ -356,7 +357,7 @@ a {
 .section-title h2 {
     font-family: var(--font-heading);
     font-size: 2.5rem;
-    color: rgba(0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.87);
 }
 
 .section-title p {
@@ -364,6 +365,7 @@ a {
     font-size: 1.2rem;
     margin-bottom: 2rem;
     line-height: 1;
+    font-weight: bolder;
 }
 
 .products-grid {
@@ -510,6 +512,7 @@ a {
     color: var(--text-secondary);
     margin-bottom: 2rem;
     line-height:1.5;
+    font-weight: bolder;
 }
 
 .btn-secondary {
@@ -576,7 +579,7 @@ footer {
    ========================================== */
 .whatsapp-float {
     position: fixed;
-    bottom: 30px;
+    bottom: 80px;
     right: 30px;
     width: 60px;
     height: 60px;
@@ -587,14 +590,22 @@ footer {
     justify-content: center;
     align-items: center;
     font-size: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
     z-index: 2000;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    text-decoration: none;
+    transition: var(--transition);
+    animation: pulse 2s infinite;
 }
 
 .whatsapp-float:hover {
     transform: scale(1.1);
     background-color: var(--whatsapp-hover);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
 /* ==========================================
@@ -745,7 +756,7 @@ footer {
         width: 54px;
         height: 54px;
         right: max(16px, env(safe-area-inset-right));
-        bottom: max(16px, env(safe-area-inset-bottom));
+        bottom: max(80px, env(safe-area-inset-bottom));
         font-size: 26px;
     }
 
