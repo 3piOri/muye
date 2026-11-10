@@ -7,12 +7,14 @@ La página usa Supabase para guardar el catálogo y autenticar a la persona admi
 1. Crea una cuenta en [supabase.com](https://supabase.com/) y crea un proyecto nuevo. Guarda la contraseña del proyecto en un gestor de contraseñas.
 2. En el panel del proyecto abre **SQL Editor**, pega el contenido de `supabase-setup.sql` y ejecuta la consulta. Esto crea las tablas y políticas, e importa los cuatro productos que actualmente están en `services-data.js` (incluyendo sus cambios locales).
 3. En **Authentication → Users**, elige **Add user**. Registra el correo y una contraseña segura que quieras usar para entrar a la administración; confirma/verifica el correo desde el panel si se solicita.
-4. Copia el **User UID** de esa cuenta. En SQL Editor ejecuta esta consulta reemplazando el UUID de ejemplo por el UID copiado:
+4. Copia el **User UID** de esa cuenta. En SQL Editor ejecuta esta consulta reemplazando el texto de ejemplo por el UID copiado. **Conserva las comillas simples** alrededor del UUID:
 
    ```sql
    insert into public.admin_users (user_id)
-   values ('PEGA-AQUI-EL-USER-UID');
+   values ('PEGA-AQUI-EL-USER-UID'::uuid);
    ```
+
+   Sustituye `PEGA-AQUI-EL-USER-UID` por el UID que muestra tu usuario en Supabase, sin quitar las comillas simples ni el sufijo `::uuid`. El valor debe quedar con este formato: `'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'::uuid`.
 
 5. Desactiva el registro público de usuarios en **Authentication → Settings** (o **Sign up**, según la versión del panel). La cuenta administradora ya fue creada desde el panel; no se necesita habilitar registro desde la página.
 
