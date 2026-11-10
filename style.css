@@ -383,6 +383,18 @@ a {
     min-width: 0; 
 }
 
+.catalog-error {
+    grid-column: 1 / -1;
+    color: #a32121;
+    text-align: center;
+}
+
+.catalog-empty {
+    grid-column: 1 / -1;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
 .product-card {
     width: 32rem;
     height: 46rem;

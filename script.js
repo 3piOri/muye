@@ -1,5 +1,4 @@
 const productsGrid = document.querySelector("#products-grid");
-const products = window.servicesData && window.servicesData.products;
 const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector("#nav-links");
 
@@ -35,11 +34,12 @@ if (!productsGrid) {
     throw new Error('No se encontró el contenedor "#products-grid".');
 }
 
-if (!Array.isArray(products)) {
-    throw new Error("No se encontró una lista válida de productos en services-data.js.");
-}
-
 function createProductCard(product) {
+    const orderUrl = new URL(product.whatsappUrl, window.location.href);
+    if (orderUrl.protocol !== "https:") {
+        throw new Error(`El enlace para pedir "${product.name}" debe usar HTTPS.`);
+    }
+
     const card = document.createElement("div");
     card.className = "product-card";
 
@@ -74,9 +74,10 @@ function createProductCard(product) {
     description.textContent = product.description;
 
     const orderButton = document.createElement("a");
-    orderButton.href = product.whatsappUrl;
+    orderButton.href = orderUrl.href;
     orderButton.className = "btn-ws";
     orderButton.target = "_blank";
+    orderButton.rel = "noopener noreferrer";
 
     const whatsappIcon = document.createElement("i");
     whatsappIcon.className = "fa-brands fa-whatsapp";
@@ -88,15 +89,73 @@ function createProductCard(product) {
     return card;
 }
 
-products.forEach((product) => {
-    const requiredFields = ["image", "name", "description", "price", "whatsappUrl"];
-    const missingField = requiredFields.find((field) => (
-        typeof product[field] !== "string" || product[field].trim() === ""
-    ));
+function renderProducts(products) {
+    productsGrid.replaceChildren();
 
-    if (missingField) {
-        throw new Error(`Falta el campo "${missingField}" en un producto de services-data.js.`);
+    if (products.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "catalog-empty";
+        emptyMessage.textContent = "Estamos preparando nuevos productos.";
+        productsGrid.append(emptyMessage);
+        return;
     }
 
-    productsGrid.append(createProductCard(product));
+    products.forEach((product) => {
+        const requiredFields = ["image", "name", "description", "price", "whatsappUrl"];
+        const missingField = requiredFields.find((field) => (
+            typeof product[field] !== "string" || product[field].trim() === ""
+        ));
+
+        if (missingField) {
+            throw new Error(`Falta el campo "${missingField}" en un producto del catálogo.`);
+        }
+
+        productsGrid.append(createProductCard(product));
+    });
+}
+
+function showCatalogError(message) {
+    const error = document.createElement("p");
+    error.className = "catalog-error";
+    error.setAttribute("role", "alert");
+    error.textContent = message;
+    productsGrid.replaceChildren(error);
+}
+
+async function loadProducts() {
+    const config = window.supabaseConfig;
+    const hasSupabaseConfig = config && config.url && config.anonKey;
+
+    if (!hasSupabaseConfig) {
+        const products = window.servicesData && window.servicesData.products;
+        if (!Array.isArray(products)) {
+            throw new Error("No se encontró una lista válida de productos en services-data.js.");
+        }
+        renderProducts(products);
+        return;
+    }
+
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+        throw new Error("No se pudo cargar Supabase. Revisa tu conexión a internet e inténtalo de nuevo.");
+    }
+
+    const client = window.supabase.createClient(config.url, config.anonKey);
+    const { data, error } = await client
+        .from("products")
+        .select("image, name, description, price, whatsapp_url, tag")
+        .order("sort_order", { ascending: true });
+
+    if (error) {
+        throw new Error(`No se pudo cargar el catálogo: ${error.message}`);
+    }
+
+    renderProducts(data.map((product) => ({
+        ...product,
+        whatsappUrl: product.whatsapp_url
+    })));
+}
+
+loadProducts().catch((error) => {
+    console.error(error);
+    showCatalogError("No pudimos cargar el catálogo en este momento. Intenta de nuevo más tarde.");
 });

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Administración | Muyë</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <main class="admin-shell">
+        <a class="back-link" href="./">← Volver a Muyë</a>
+        <header class="admin-header">
+            <p class="eyebrow">MUYË · ADMINISTRACIÓN</p>
+            <h1>Catálogo</h1>
+            <p>Inicia sesión para editar, agregar o eliminar productos.</p>
+        </header>
+
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+
+        <section id="login-section" class="panel">
+            <h2>Iniciar sesión</h2>
+            <form id="login-form" class="stack-form">
+                <label>
+                    Correo electrónico
+                    <input name="email" type="email" autocomplete="username" required>
+                </label>
+                <label>
+                    Contraseña
+                    <input name="password" type="password" autocomplete="current-password" required>
+                </label>
+                <button class="primary-button" type="submit">Entrar</button>
+            </form>
+        </section>
+
+        <section id="catalog-section" hidden>
+            <div class="catalog-heading">
+                <h2>Productos</h2>
+                <button id="logout-button" class="secondary-button" type="button">Cerrar sesión</button>
+            </div>
+            <div id="product-list" class="product-list"></div>
+
+            <section class="panel add-panel">
+                <h2>Agregar producto</h2>
+                <form id="add-product-form" class="product-form">
+                    <label>
+                        Imagen (ruta del sitio o URL)
+                        <input name="image" type="text" placeholder="colcha.jfif" required>
+                    </label>
+                    <label>
+                        Nombre
+                        <input name="name" type="text" required>
+                    </label>
+                    <label class="wide-field">
+                        Descripción
+                        <textarea name="description" rows="3" required></textarea>
+                    </label>
+                    <label>
+                        Precio
+                        <input name="price" type="text" placeholder="$380 MXN" required>
+                    </label>
+                    <label>
+                        Enlace de WhatsApp
+                        <input name="whatsappUrl" type="url" placeholder="https://wa.me/..." required>
+                    </label>
+                    <label>
+                        Etiqueta (opcional)
+                        <input name="tag" type="text" placeholder="Nuevo">
+                    </label>
+                    <div class="wide-field form-actions">
+                        <button class="primary-button" type="submit">Agregar al catálogo</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
