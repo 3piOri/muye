@@ -5,6 +5,7 @@ const loginForm = document.querySelector("#login-form");
 const productList = document.querySelector("#product-list");
 const addProductForm = document.querySelector("#add-product-form");
 const config = window.supabaseConfig;
+let supabaseClient = null;
 
 function showStatus(message, type = "") {
     statusMessage.textContent = message;
@@ -88,6 +89,10 @@ function createProductForm(product) {
 }
 
 async function loadProducts() {
+    if (!supabaseClient) {
+        throw new Error("Supabase no está inicializado.");
+    }
+
     showStatus("Cargando catálogo…");
     const { data, error } = await supabaseClient
         .from("products")
@@ -122,7 +127,7 @@ if (!config || !config.url || !config.anonKey) {
     showStatus("No se pudo cargar Supabase. Revisa tu conexión a internet e inténtalo de nuevo.", "error");
     loginForm.querySelector("button[type='submit']").disabled = true;
 } else {
-    const supabaseClient = window.supabase.createClient(config.url, config.anonKey);
+    supabaseClient = window.supabase.createClient(config.url, config.anonKey);
 
     async function openCatalog() {
         setAuthenticated(true);
