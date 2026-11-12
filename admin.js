@@ -5,6 +5,15 @@ const loginForm = document.querySelector("#login-form");
 const productList = document.querySelector("#product-list");
 const addProductForm = document.querySelector("#add-product-form");
 const config = window.supabaseConfig;
+const imageBucket = "product-images";
+const maxImageSize = 10 * 1024 * 1024;
+const imageExtensions = {
+    "image/avif": "avif",
+    "image/gif": "gif",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp"
+};
 let supabaseClient = null;
 
 function showStatus(message, type = "") {
@@ -12,15 +21,34 @@ function showStatus(message, type = "") {
     statusMessage.dataset.type = type;
 }
 
-function getProductValues(form) {
+function getWhatsAppUrl(form) {
     const values = new FormData(form);
     const whatsappUrl = values.get("whatsappUrl").trim();
     if (new URL(whatsappUrl).protocol !== "https:") {
         throw new Error("El enlace de WhatsApp debe usar HTTPS.");
     }
 
+    return whatsappUrl;
+}
+
+function validateProductImage(form) {
+    const values = new FormData(form);
+    const hasUploadedFile = form.querySelector("input[name='imageFile']").files.length > 0;
+    if (!values.get("image").trim() && !hasUploadedFile) {
+        throw new Error("Indica una imagen o selecciona una foto para subir.");
+    }
+}
+
+function getProductValues(form, uploadedImage) {
+    const values = new FormData(form);
+    const whatsappUrl = getWhatsAppUrl(form);
+    const image = uploadedImage || values.get("image").trim();
+    if (!image) {
+        throw new Error("Indica una imagen o selecciona una foto para subir.");
+    }
+
     return {
-        image: values.get("image").trim(),
+        image,
         name: values.get("name").trim(),
         description: values.get("description").trim(),
         price: values.get("price").trim(),
@@ -52,6 +80,32 @@ function createField(labelText, name, value, options = {}) {
     return label;
 }
 
+async function uploadProductImage(form) {
+    getWhatsAppUrl(form);
+    validateProductImage(form);
+    const file = form.querySelector("input[name='imageFile']").files[0];
+    if (!file) {
+        return null;
+    }
+    if (!Object.prototype.hasOwnProperty.call(imageExtensions, file.type)) {
+        throw new Error("El archivo debe ser una imagen JPG, PNG, WebP, GIF o AVIF.");
+    }
+    if (file.size > maxImageSize) {
+        throw new Error("La imagen no puede superar los 10 MB.");
+    }
+
+    const path = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.${imageExtensions[file.type]}`;
+    const { error } = await supabaseClient.storage
+        .from(imageBucket)
+        .upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
+    if (error) {
+        throw error;
+    }
+
+    const { data } = supabaseClient.storage.from(imageBucket).getPublicUrl(path);
+    return data.publicUrl;
+}
+
 function createProductForm(product) {
     const form = document.createElement("form");
     form.className = "product-entry";
@@ -59,9 +113,18 @@ function createProductForm(product) {
 
     const heading = document.createElement("h3");
     heading.textContent = product.name;
+    const imageField = createField("Imagen actual (ruta del sitio o URL)", "image", product.image, { required: false });
+    const imageUploadLabel = document.createElement("label");
+    imageUploadLabel.textContent = "Subir foto nueva (opcional)";
+    const imageUpload = document.createElement("input");
+    imageUpload.type = "file";
+    imageUpload.name = "imageFile";
+    imageUpload.accept = Object.keys(imageExtensions).join(",");
+    imageUploadLabel.append(imageUpload);
     form.append(
         heading,
-        createField("Imagen (ruta del sitio o URL)", "image", product.image),
+        imageField,
+        imageUploadLabel,
         createField("Nombre", "name", product.name),
         createField("Descripción", "description", product.description, { multiline: true, wide: true }),
         createField("Precio", "price", product.price),
@@ -184,10 +247,13 @@ if (!config || !config.url || !config.anonKey) {
         }
         event.preventDefault();
         const form = event.target;
+        const saveButton = form.querySelector("button[type='submit']");
+        saveButton.disabled = true;
         try {
+            const uploadedImage = await uploadProductImage(form);
             const { error } = await supabaseClient
                 .from("products")
-                .update(getProductValues(form))
+                .update(getProductValues(form, uploadedImage))
                 .eq("id", form.dataset.productId);
 
             if (error) {
@@ -197,6 +263,8 @@ if (!config || !config.url || !config.anonKey) {
             await loadProducts();
         } catch (error) {
             showStatus(`No se pudieron guardar los cambios: ${error.message}`, "error");
+        } finally {
+            saveButton.disabled = false;
         }
     });
 
@@ -238,6 +306,7 @@ if (!config || !config.url || !config.anonKey) {
         submitButton.disabled = true;
 
         try {
+            const uploadedImage = await uploadProductImage(addProductForm);
             const { data, error: listError } = await supabaseClient
                 .from("products")
                 .select("sort_order")
@@ -250,7 +319,7 @@ if (!config || !config.url || !config.anonKey) {
             const nextOrder = data.length ? data[0].sort_order + 1 : 0;
             const { error } = await supabaseClient
                 .from("products")
-                .insert({ ...getProductValues(addProductForm), sort_order: nextOrder });
+                .insert({ ...getProductValues(addProductForm, uploadedImage), sort_order: nextOrder });
             if (error) {
                 throw error;
             }

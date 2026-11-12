@@ -5,7 +5,7 @@ La página usa Supabase para guardar el catálogo y autenticar a la persona admi
 ## 1. Crear el proyecto y la cuenta
 
 1. Crea una cuenta en [supabase.com](https://supabase.com/) y crea un proyecto nuevo. Guarda la contraseña del proyecto en un gestor de contraseñas.
-2. En el panel del proyecto abre **SQL Editor**, pega el contenido de `supabase-setup.sql` y ejecuta la consulta. Esto crea las tablas y políticas, e importa los cuatro productos que actualmente están en `services-data.js` (incluyendo sus cambios locales).
+2. En el panel del proyecto abre **SQL Editor**, pega el contenido de `supabase-setup.sql` y ejecuta la consulta. Esto crea las tablas y políticas, configura el almacenamiento público de imágenes e importa los cuatro productos que actualmente están en `services-data.js` (incluyendo sus cambios locales).
 3. En **Authentication → Users**, elige **Add user**. Registra el correo y una contraseña segura que quieras usar para entrar a la administración; confirma/verifica el correo desde el panel si se solicita.
 4. Copia el **User UID** de esa cuenta. En SQL Editor ejecuta esta consulta reemplazando el texto de ejemplo por el UID copiado. **Conserva las comillas simples** alrededor del UUID:
 
@@ -37,6 +37,8 @@ La URL y la clave **publishable/anon** son públicas por diseño y pueden estar 
 
 ## Uso del catálogo
 
-Desde `/admin.html` puedes cambiar todos los campos de los productos, agregar productos sin límite fijado por la página o eliminarlos por completo. La imagen se indica con una ruta del sitio (por ejemplo, `6.png`) o una URL pública; los archivos locales nuevos deben agregarse y publicarse en el repositorio. Los cambios se guardan en Supabase y aparecen en la página pública.
+Desde `/admin.html` puedes cambiar todos los campos de los productos, agregar productos sin límite fijado por la página o eliminarlos por completo. Para las imágenes existentes puedes conservar o editar la ruta/URL; para usar una foto nueva, selecciónala en **Subir foto** al agregar o editar un producto. Se admiten archivos JPG, PNG, WebP, GIF y AVIF de hasta 10 MB. Las fotos se guardan en el almacenamiento de Supabase y aparecen en la página pública; el bucket es público para que el catálogo pueda mostrarlas, pero solo las cuentas administradoras pueden subir, modificar o borrar archivos. Los cambios del catálogo se guardan en Supabase.
+
+Si ya configuraste Supabase antes de agregar esta función, vuelve a ejecutar el `supabase-setup.sql` actualizado en **SQL Editor** para crear el bucket y sus políticas de acceso.
 
 Mientras no completes la conexión con Supabase, la página pública seguirá mostrando los productos locales de `services-data.js`. Una vez configurada la conexión, el catálogo se lee desde Supabase.

@@ -44,8 +44,12 @@
                 <h2>Agregar producto</h2>
                 <form id="add-product-form" class="product-form">
                     <label>
-                        Imagen (ruta del sitio o URL)
-                        <input name="image" type="text" placeholder="colcha.jfif" required>
+                        Imagen (ruta del sitio o URL, si no subes un archivo)
+                        <input name="image" type="text" placeholder="colcha.jfif">
+                    </label>
+                    <label>
+                        Subir foto (opcional)
+                        <input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
                     </label>
                     <label>
                         Nombre
