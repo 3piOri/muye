@@ -111,11 +111,12 @@ async function uploadProductImage(form) {
 
 function createProductForm(product) {
     const form = document.createElement("form");
-    form.className = "product-entry";
+    form.className = "product-entry product-form";
     form.dataset.productId = product.id;
 
     const heading = document.createElement("h3");
     heading.textContent = product.name;
+    heading.className = "wide-field";
     const imageField = createField("Imagen actual (ruta del sitio o URL)", "image", product.image, { required: false });
     const imageUploadLabel = document.createElement("label");
     imageUploadLabel.textContent = "Subir foto nueva (opcional)";

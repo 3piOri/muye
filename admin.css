@@ -1,9 +1,15 @@
 :root {
     color-scheme: light;
-    font-family: system-ui, sans-serif;
     color: #20231c;
     background: #f3f5ef;
+    font-family: var(--font-body);
     font-synthesis: none;
+    --font-heading: 'New Tegomin', serif;
+    --font-body: 'New Tegomin', serif;
+}
+
+body, input, textarea, select, button {
+    font-family: var(--font-body);
 }
 
 * {
@@ -18,6 +24,11 @@ button,
 input,
 textarea {
     font: inherit;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+    font-family: var(--font-body);
 }
 
 .admin-shell {
