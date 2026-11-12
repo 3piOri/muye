@@ -397,7 +397,7 @@ a {
 
 .product-card {
     width: 32rem;
-    height: 46rem;
+    height: auto;
     border-radius: 16px;
     overflow: hidden;
     border: 4px solid transparent;
@@ -451,6 +451,9 @@ a {
     display: flex;
     flex-direction: column;
     flex: 0 0 25%;
+    overflow: visible;
+    flex-grow: 1;
+    height: auto;
 }
 
 .product-info h3 {
@@ -755,13 +758,26 @@ footer {
 
     .products-grid {
         grid-template-columns: minmax(0, 1fr);
-        grid-auto-rows: 1fr;
+        grid-auto-rows: auto;
         gap: 1.25rem;
     }
 
     .product-card {
         width: 100%;
         max-width: 32rem;
+    }
+
+    .product-image {
+        flex: 0 0 auto;
+    }
+
+    .product-image img {
+        display: block;
+        height: auto;
+    }
+
+    .product-info {
+        flex: 0 0 auto;
     }
 
     .whatsapp-float {
