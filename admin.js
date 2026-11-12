@@ -99,6 +99,9 @@ async function uploadProductImage(form) {
         .from(imageBucket)
         .upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
     if (error) {
+        if (error.message === "Bucket not found") {
+            throw new Error('No existe el almacenamiento "product-images". Ejecuta el supabase-setup.sql actualizado en SQL Editor de Supabase.');
+        }
         throw error;
     }
 
