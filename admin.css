@@ -96,6 +96,15 @@ h1 {
     font-weight: 650;
 }
 
+.password-field {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.password-field input {
+    flex: 1;
+}
+
 input,
 textarea {
     width: 100%;

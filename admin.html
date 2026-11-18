@@ -30,7 +30,10 @@
                 </label>
                 <label>
                     Contraseña
-                    <input name="password" type="password" autocomplete="current-password" required>
+                    <span class="password-field">
+                        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                        <button id="toggle-password" class="secondary-button" type="button" aria-controls="login-password" aria-pressed="false">Mostrar</button>
+                    </span>
                 </label>
                 <button class="primary-button" type="submit">Entrar</button>
             </form>

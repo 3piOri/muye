@@ -2,6 +2,8 @@ const statusMessage = document.querySelector("#status-message");
 const loginSection = document.querySelector("#login-section");
 const catalogSection = document.querySelector("#catalog-section");
 const loginForm = document.querySelector("#login-form");
+const loginPassword = loginForm.querySelector("#login-password");
+const togglePasswordButton = loginForm.querySelector("#toggle-password");
 const productList = document.querySelector("#product-list");
 const addProductForm = document.querySelector("#add-product-form");
 const config = window.supabaseConfig;
@@ -15,6 +17,13 @@ const imageExtensions = {
     "image/webp": "webp"
 };
 let supabaseClient = null;
+
+togglePasswordButton.addEventListener("click", () => {
+    const isPasswordVisible = loginPassword.type === "text";
+    loginPassword.type = isPasswordVisible ? "password" : "text";
+    togglePasswordButton.textContent = isPasswordVisible ? "Mostrar" : "Ocultar";
+    togglePasswordButton.setAttribute("aria-pressed", String(!isPasswordVisible));
+});
 
 function showStatus(message, type = "") {
     statusMessage.textContent = message;
