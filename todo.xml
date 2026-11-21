@@ -1,0 +1,1849 @@
+﻿<proyecto>
+<archivo nombre="admin.css">
+:root {
+    color-scheme: light;
+    color: #20231c;
+    background: #f3f5ef;
+    font-family: var(--font-body);
+    font-synthesis: none;
+    --font-heading: 'New Tegomin', serif;
+    --font-body: 'New Tegomin', serif;
+}
+
+body, input, textarea, select, button {
+    font-family: var(--font-body);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+    font-family: var(--font-body);
+}
+
+.admin-shell {
+    width: min(100% - 2rem, 920px);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+}
+
+.back-link {
+    color: #4a6e18;
+    text-decoration: none;
+}
+
+.admin-header {
+    margin: 2rem 0;
+}
+
+.eyebrow {
+    color: #4a6e18;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+h1,
+h2,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 0.25rem;
+    font-size: clamp(2rem, 6vw, 3rem);
+}
+
+.admin-header > p:last-child {
+    color: #64695f;
+}
+
+.panel,
+.product-entry {
+    padding: 1.25rem;
+    border: 1px solid #dce1d4;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(32, 35, 28, 0.05);
+}
+
+.panel h2,
+.catalog-heading h2 {
+    margin-bottom: 1rem;
+}
+
+.stack-form,
+.product-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.stack-form label,
+.product-form label {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 650;
+}
+
+.password-field {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.password-field input {
+    flex: 1;
+}
+
+input,
+textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid #c9cfc1;
+    border-radius: 8px;
+    background: #fff;
+    color: #20231c;
+}
+
+input:focus,
+textarea:focus {
+    outline: 2px solid #749445;
+    outline-offset: 1px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.primary-button,
+.secondary-button {
+    min-height: 42px;
+    padding: 0.6rem 1rem;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.primary-button {
+    background: #4a6e18;
+    color: white;
+}
+
+.secondary-button {
+    border: 1px solid #bdc5b2;
+    background: white;
+    color: #39442d;
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.status-message {
+    margin-bottom: 1rem;
+}
+
+.status-message:empty {
+    display: none;
+}
+
+.status-message[data-type="error"] {
+    color: #a32121;
+}
+
+.status-message[data-type="success"] {
+    color: #356412;
+}
+
+.catalog-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 2rem 0 1rem;
+}
+
+.product-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.product-entry h3 {
+    margin-bottom: 1rem;
+}
+
+.product-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wide-field {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.delete-button {
+    border: 1px solid #b43a35;
+    background: white;
+    color: #a32121;
+}
+
+.empty-list {
+    padding: 1rem;
+    color: #64695f;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    .product-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .wide-field {
+        grid-column: auto;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+}
+
+</archivo>
+<archivo nombre="admin.html">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>AdministraciÃ³n | MuyÃ«</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Tegomin&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <main class="admin-shell">
+        <a class="back-link" href="./">â† Volver a MuyÃ«</a>
+        <header class="admin-header">
+            <p class="eyebrow">MUYÃ‹ Â· ADMINISTRACIÃ“N</p>
+            <h1>CatÃ¡logo</h1>
+            <p>Inicia sesiÃ³n para editar, agregar o eliminar productos.</p>
+        </header>
+
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+
+        <section id="login-section" class="panel">
+            <h2>Iniciar sesiÃ³n</h2>
+            <form id="login-form" class="stack-form">
+                <label>
+                    Correo electrÃ³nico
+                    <input name="email" type="email" autocomplete="username" required>
+                </label>
+                <label>
+                    ContraseÃ±a
+                    <span class="password-field">
+                        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                        <button id="toggle-password" class="secondary-button" type="button" aria-controls="login-password" aria-pressed="false">Mostrar</button>
+                    </span>
+                </label>
+                <button class="primary-button" type="submit">Entrar</button>
+            </form>
+        </section>
+
+        <section id="catalog-section" hidden>
+            <div class="catalog-heading">
+                <h2>Productos</h2>
+                <button id="logout-button" class="secondary-button" type="button">Cerrar sesiÃ³n</button>
+            </div>
+            <div id="product-list" class="product-list"></div>
+
+            <section class="panel add-panel">
+                <h2>Agregar producto</h2>
+                <form id="add-product-form" class="product-form">
+                    <label>
+                        Imagen (ruta del sitio o URL, si no subes un archivo)
+                        <input name="image" type="text" placeholder="nombre/.jpg.png.webp.gif.avif">
+                    </label>
+                    <label>
+                        Subir foto (opcional)
+                        <input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+                    </label>
+                    <label>
+                        Nombre
+                        <input name="name" type="text" required>
+                    </label>
+                    <label class="wide-field">
+                        DescripciÃ³n
+                        <textarea name="description" rows="3" required></textarea>
+                    </label>
+                    <label>
+                        Precio
+                        <input name="price" type="text" placeholder="$380 MXN" required>
+                    </label>
+                    <label>
+                        Enlace de WhatsApp
+                        <input name="whatsappUrl" type="url" placeholder="https://wa.me/..." required>
+                    </label>
+                    <label>
+                        Etiqueta (opcional)
+                        <input name="tag" type="text" placeholder="Nuevo">
+                    </label>
+                    <div class="wide-field form-actions">
+                        <button class="primary-button" type="submit">Agregar al catÃ¡logo</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
+
+</archivo>
+<archivo nombre="admin.js">
+const statusMessage = document.querySelector("#status-message");
+const loginSection = document.querySelector("#login-section");
+const catalogSection = document.querySelector("#catalog-section");
+const loginForm = document.querySelector("#login-form");
+const loginPassword = loginForm.querySelector("#login-password");
+const togglePasswordButton = loginForm.querySelector("#toggle-password");
+const productList = document.querySelector("#product-list");
+const addProductForm = document.querySelector("#add-product-form");
+const config = window.supabaseConfig;
+const imageBucket = "product-images";
+const maxImageSize = 10 * 1024 * 1024;
+const imageExtensions = {
+    "image/avif": "avif",
+    "image/gif": "gif",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp"
+};
+let supabaseClient = null;
+
+togglePasswordButton.addEventListener("click", () => {
+    const isPasswordVisible = loginPassword.type === "text";
+    loginPassword.type = isPasswordVisible ? "password" : "text";
+    togglePasswordButton.textContent = isPasswordVisible ? "Mostrar" : "Ocultar";
+    togglePasswordButton.setAttribute("aria-pressed", String(!isPasswordVisible));
+});
+
+function showStatus(message, type = "") {
+    statusMessage.textContent = message;
+    statusMessage.dataset.type = type;
+}
+
+function getWhatsAppUrl(form) {
+    const values = new FormData(form);
+    const whatsappUrl = values.get("whatsappUrl").trim();
+    if (new URL(whatsappUrl).protocol !== "https:") {
+        throw new Error("El enlace de WhatsApp debe usar HTTPS.");
+    }
+
+    return whatsappUrl;
+}
+
+function validateProductImage(form) {
+    const values = new FormData(form);
+    const hasUploadedFile = form.querySelector("input[name='imageFile']").files.length > 0;
+    if (!values.get("image").trim() && !hasUploadedFile) {
+        throw new Error("Indica una imagen o selecciona una foto para subir.");
+    }
+}
+
+function getProductValues(form, uploadedImage) {
+    const values = new FormData(form);
+    const whatsappUrl = getWhatsAppUrl(form);
+    const image = uploadedImage || values.get("image").trim();
+    if (!image) {
+        throw new Error("Indica una imagen o selecciona una foto para subir.");
+    }
+
+    return {
+        image,
+        name: values.get("name").trim(),
+        description: values.get("description").trim(),
+        price: values.get("price").trim(),
+        whatsapp_url: whatsappUrl,
+        tag: values.get("tag").trim() || null
+    };
+}
+
+function createField(labelText, name, value, options = {}) {
+    const label = document.createElement("label");
+    label.textContent = labelText;
+
+    const input = options.multiline
+        ? document.createElement("textarea")
+        : document.createElement("input");
+    input.name = name;
+    input.value = value || "";
+    input.required = options.required !== false;
+    if (options.multiline) {
+        input.rows = 3;
+    } else {
+        input.type = options.type || "text";
+    }
+
+    label.append(input);
+    if (options.wide) {
+        label.classList.add("wide-field");
+    }
+    return label;
+}
+
+async function uploadProductImage(form) {
+    getWhatsAppUrl(form);
+    validateProductImage(form);
+    const file = form.querySelector("input[name='imageFile']").files[0];
+    if (!file) {
+        return null;
+    }
+    if (!Object.prototype.hasOwnProperty.call(imageExtensions, file.type)) {
+        throw new Error("El archivo debe ser una imagen JPG, PNG, WebP, GIF o AVIF.");
+    }
+    if (file.size > maxImageSize) {
+        throw new Error("La imagen no puede superar los 10 MB.");
+    }
+
+    const path = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.${imageExtensions[file.type]}`;
+    const { error } = await supabaseClient.storage
+        .from(imageBucket)
+        .upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
+    if (error) {
+        if (error.message === "Bucket not found") {
+            throw new Error('No existe el almacenamiento "product-images". Ejecuta el supabase-setup.sql actualizado en SQL Editor de Supabase.');
+        }
+        throw error;
+    }
+
+    const { data } = supabaseClient.storage.from(imageBucket).getPublicUrl(path);
+    return data.publicUrl;
+}
+
+function createProductForm(product) {
+    const form = document.createElement("form");
+    form.className = "product-entry product-form";
+    form.dataset.productId = product.id;
+
+    const heading = document.createElement("h3");
+    heading.textContent = product.name;
+    heading.className = "wide-field";
+    const imageField = createField("Imagen actual (ruta del sitio o URL)", "image", product.image, { required: false });
+    const imageUploadLabel = document.createElement("label");
+    imageUploadLabel.textContent = "Subir foto nueva (opcional)";
+    const imageUpload = document.createElement("input");
+    imageUpload.type = "file";
+    imageUpload.name = "imageFile";
+    imageUpload.accept = Object.keys(imageExtensions).join(",");
+    imageUploadLabel.append(imageUpload);
+    form.append(
+        heading,
+        imageField,
+        imageUploadLabel,
+        createField("Nombre", "name", product.name),
+        createField("DescripciÃ³n", "description", product.description, { multiline: true, wide: true }),
+        createField("Precio", "price", product.price),
+        createField("Enlace de WhatsApp", "whatsappUrl", product.whatsapp_url, { type: "url" }),
+        createField("Etiqueta (opcional)", "tag", product.tag, { required: false })
+    );
+
+    const actions = document.createElement("div");
+    actions.className = "wide-field form-actions";
+
+    const saveButton = document.createElement("button");
+    saveButton.className = "primary-button";
+    saveButton.type = "submit";
+    saveButton.textContent = "Guardar cambios";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "primary-button delete-button";
+    deleteButton.type = "button";
+    deleteButton.dataset.action = "delete";
+    deleteButton.textContent = "Eliminar producto";
+
+    actions.append(saveButton, deleteButton);
+    form.append(actions);
+    return form;
+}
+
+async function loadProducts() {
+    if (!supabaseClient) {
+        throw new Error("Supabase no estÃ¡ inicializado.");
+    }
+
+    showStatus("Cargando catÃ¡logoâ€¦");
+    const { data, error } = await supabaseClient
+        .from("products")
+        .select("id, image, name, description, price, whatsapp_url, tag, sort_order")
+        .order("sort_order", { ascending: true });
+
+    if (error) {
+        throw error;
+    }
+
+    productList.replaceChildren();
+    if (data.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-list";
+        emptyMessage.textContent = "TodavÃ­a no hay productos. Agrega el primero abajo.";
+        productList.append(emptyMessage);
+    } else {
+        data.forEach((product) => productList.append(createProductForm(product)));
+    }
+    showStatus("");
+}
+
+function setAuthenticated(isAuthenticated) {
+    loginSection.hidden = isAuthenticated;
+    catalogSection.hidden = !isAuthenticated;
+}
+
+if (!config || !config.url || !config.anonKey) {
+    showStatus("Falta configurar la URL y la clave pÃºblica de Supabase en supabase-config.js.", "error");
+    loginForm.querySelector("button[type='submit']").disabled = true;
+} else if (!window.supabase || typeof window.supabase.createClient !== "function") {
+    showStatus("No se pudo cargar Supabase. Revisa tu conexiÃ³n a internet e intÃ©ntalo de nuevo.", "error");
+    loginForm.querySelector("button[type='submit']").disabled = true;
+} else {
+    supabaseClient = window.supabase.createClient(config.url, config.anonKey);
+
+    async function openCatalog() {
+        setAuthenticated(true);
+        try {
+            await loadProducts();
+        } catch (error) {
+            console.error(error);
+            showStatus(`No se pudo cargar el catÃ¡logo. Verifica los permisos de administrador: ${error.message}`, "error");
+        }
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const values = new FormData(loginForm);
+        const submitButton = loginForm.querySelector("button[type='submit']");
+        submitButton.disabled = true;
+        showStatus("Validando accesoâ€¦");
+
+        try {
+            const { error } = await supabaseClient.auth.signInWithPassword({
+                email: values.get("email").trim(),
+                password: values.get("password")
+            });
+
+            if (error) {
+                showStatus(`No se pudo iniciar sesiÃ³n: ${error.message}`, "error");
+                return;
+            }
+            await openCatalog();
+        } catch (error) {
+            showStatus(`No se pudo iniciar sesiÃ³n: ${error.message}`, "error");
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+
+    document.querySelector("#logout-button").addEventListener("click", async () => {
+        try {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                showStatus(`No se pudo cerrar sesiÃ³n: ${error.message}`, "error");
+                return;
+            }
+            setAuthenticated(false);
+            showStatus("SesiÃ³n cerrada.", "success");
+        } catch (error) {
+            showStatus(`No se pudo cerrar sesiÃ³n: ${error.message}`, "error");
+        }
+    });
+
+    productList.addEventListener("submit", async (event) => {
+        if (!(event.target instanceof HTMLFormElement)) {
+            return;
+        }
+        event.preventDefault();
+        const form = event.target;
+        const saveButton = form.querySelector("button[type='submit']");
+        saveButton.disabled = true;
+        try {
+            const uploadedImage = await uploadProductImage(form);
+            const { error } = await supabaseClient
+                .from("products")
+                .update(getProductValues(form, uploadedImage))
+                .eq("id", form.dataset.productId);
+
+            if (error) {
+                throw error;
+            }
+            showStatus("Producto actualizado.", "success");
+            await loadProducts();
+        } catch (error) {
+            showStatus(`No se pudieron guardar los cambios: ${error.message}`, "error");
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+
+    productList.addEventListener("click", async (event) => {
+        if (!(event.target instanceof Element)) {
+            return;
+        }
+        const button = event.target.closest("button[data-action='delete']");
+        if (!button) {
+            return;
+        }
+
+        const form = button.closest("form");
+        const productName = form.querySelector("input[name='name']").value;
+        if (!window.confirm(`Â¿Eliminar por completo "${productName}"? Esta acciÃ³n no se puede deshacer.`)) {
+            return;
+        }
+
+        button.disabled = true;
+        try {
+            const { error } = await supabaseClient
+                .from("products")
+                .delete()
+                .eq("id", form.dataset.productId);
+            if (error) {
+                throw error;
+            }
+            showStatus("Producto eliminado.", "success");
+            await loadProducts();
+        } catch (error) {
+            button.disabled = false;
+            showStatus(`No se pudo eliminar el producto: ${error.message}`, "error");
+        }
+    });
+
+    addProductForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submitButton = addProductForm.querySelector("button[type='submit']");
+        submitButton.disabled = true;
+
+        try {
+            const uploadedImage = await uploadProductImage(addProductForm);
+            const { data, error: listError } = await supabaseClient
+                .from("products")
+                .select("sort_order")
+                .order("sort_order", { ascending: false })
+                .limit(1);
+            if (listError) {
+                throw listError;
+            }
+
+            const nextOrder = data.length ? data[0].sort_order + 1 : 0;
+            const { error } = await supabaseClient
+                .from("products")
+                .insert({ ...getProductValues(addProductForm, uploadedImage), sort_order: nextOrder });
+            if (error) {
+                throw error;
+            }
+
+            addProductForm.reset();
+            showStatus("Producto agregado.", "success");
+            await loadProducts();
+        } catch (error) {
+            showStatus(`No se pudo agregar el producto: ${error.message}`, "error");
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+
+    supabaseClient.auth.getSession()
+        .then(({ data, error }) => {
+            if (error) {
+                showStatus(`No se pudo verificar la sesiÃ³n: ${error.message}`, "error");
+                return;
+            }
+            if (data.session) {
+                openCatalog();
+            }
+        })
+        .catch((error) => {
+            showStatus(`No se pudo verificar la sesiÃ³n: ${error.message}`, "error");
+        });
+}
+
+</archivo>
+<archivo nombre="index.html">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuyÃ«</title>
+
+<!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MuyÃ«" />
+    <meta property="og:description" content="DiseÃ±os Ãšnicos." />
+    <meta property="og:image" content="https://3piori.github.io/muye/v2.png" />
+    <meta property="og:image:secure_url" content="https://3piori.github.io/muye/v2.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1137" />
+    <meta property="og:image:height" content="595" />
+    <meta property="og:url" content="https://3piori.github.io/muye/" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MuyÃ«">
+    <meta name="twitter:description" content="DiseÃ±os Ãšnicos.">
+    <meta name="twitter:image" content="https://3piori.github.io/muye/v2.png">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Tegomin&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Header / Navbar -->
+<header class="navbar">
+    <button class="menu-toggle" type="button" aria-label="Abrir menÃº" aria-expanded="false" aria-controls="nav-links">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="logo">
+        <a href="#">
+            <img src="1.png" alt="Logo MUYÃ‹">
+        </a>
+    </div>
+    <nav class="nav-links" id="nav-links">
+        <a href="#productos">Productos</a>
+        <a href="#nosotros">Sobre <span>MuyÃ«</span></a>
+    </nav>
+    <a href="https://www.instagram.com/muye.mx/" target="_blank" class="ig-link">
+        <i class="fa-brands fa-instagram"></i> @muye.mx
+    </a>
+</header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">ColecciÃ³n Exclusiva</span>
+            <h1>MuyÃ«</h1>
+            <p>Reimaginando lo que ya existe.</p>
+            <p>Piezas Ãºnicas elaboradas a partir de textiles recuperados.<p>     
+            <p> No hay dos iguales.<p>
+            <p>â€”â€”<p>
+            <p>Reimagining what already exists.<p>
+            <p>One-of-a-kind pieces made from rescued textiles.<p></p>
+            <p>No two are alike.<p>
+            <a href="#productos" class="badge">Ver CatÃ¡logo <i class="fa-solid fa-arrow-down"></i></a>
+        </div>
+    </section>
+
+    <!-- SecciÃ³n de Productos -->
+    <section class="products-section" id="productos">
+        <div class="section-title">
+            <h2>Nuestros Productos</h2>
+            <p>Descubre piezas Ãºnicas creadas a partir de textiles recuperados.<p>
+            <p>â€”â€”<p>
+            <p>Discover unique pieces created from reclaimed textiles.</p>
+        </div>
+
+        <div class="products-grid" id="products-grid"></div>
+    </section>
+
+    <!-- Sobre Nosotros / Info -->
+    <section class="about-section" id="nosotros">
+        <div class="about-container">
+            <h2>Acerca de <span>MuyÃ«</span></h2>
+            <p>Nada se desperdicia. Todo puede convertirse en algo nuevo. Transformamos textiles rescatados en piezas Ãºnicas, donde se encuentran el color, la memoria, la imperfecciÃ³n y la imaginaciÃ³n.<p>
+            <p>Hacemos envÃ­os a todo el paÃ­s. ContÃ¡ctanos directamente por WhatsApp para concretar tu pedido y conocer la disponibilidad.<p>
+            <p>â€”â€”â€”<p>
+            <p>Nothing is wasted. Everything can become something new. We transform rescued textiles into one-of-a-kind pieces, where color, memory, imperfection, and imagination come together</p>
+            <a href="https://www.instagram.com/mu.yume/" target="_blank" class="btn-secondary">
+                <i class="fa-brands fa-instagram"></i> Visitar Instagram
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p><i class= "fas fa-map-marker-alt"></i> Playa del Carmen, Quintana Roo. MÃ©xico</p>
+        <p>&copy; 2026 MUYÃ‹. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- BotÃ³n Flotante de WhatsApp -->
+    <a href="https://wa.me/525550648075?text=Hola!%20Me%20gustarÃ­a%20obtener%20mÃ¡s%20informaciÃ³n%20sobre%20sus%20productos." class="whatsapp-float" target="_blank" title="Contacto por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="services-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+</archivo>
+<archivo nombre="script.js">
+const productsGrid = document.querySelector("#products-grid");
+const menuToggle = document.querySelector(".menu-toggle");
+const navLinks = document.querySelector("#nav-links");
+
+if (menuToggle && navLinks) {
+    const closeMenu = () => {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Abrir menÃº");
+        navLinks.classList.remove("is-open");
+    };
+
+    menuToggle.addEventListener("click", () => {
+        const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+        menuToggle.setAttribute("aria-label", isExpanded ? "Abrir menÃº" : "Cerrar menÃº");
+        navLinks.classList.toggle("is-open", !isExpanded);
+    });
+
+    navLinks.addEventListener("click", (event) => {
+        if (event.target instanceof Element && event.target.closest("a")) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMenu();
+            menuToggle.focus();
+        }
+    });
+}
+
+if (!productsGrid) {
+    throw new Error('No se encontrÃ³ el contenedor "#products-grid".');
+}
+
+function createProductCard(product) {
+    const orderUrl = new URL(product.whatsappUrl, window.location.href);
+    if (orderUrl.protocol !== "https:") {
+        throw new Error(`El enlace para pedir "${product.name}" debe usar HTTPS.`);
+    }
+
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    const imageContainer = document.createElement("div");
+    imageContainer.className = "product-image";
+
+    const image = document.createElement("img");
+    image.src = product.image;
+    image.alt = product.name;
+    image.loading = "lazy";
+    imageContainer.append(image);
+
+    if (product.tag) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = product.tag;
+        imageContainer.append(tag);
+    }
+
+    const info = document.createElement("div");
+    info.className = "product-info";
+
+    const name = document.createElement("h3");
+    name.textContent = product.name;
+
+    const price = document.createElement("p");
+    price.className = "price";
+    price.textContent = product.price;
+
+    const description = document.createElement("p");
+    description.className = "description";
+    description.textContent = product.description;
+
+    const orderButton = document.createElement("a");
+    orderButton.href = orderUrl.href;
+    orderButton.className = "btn-ws";
+    orderButton.target = "_blank";
+    orderButton.rel = "noopener noreferrer";
+
+    const whatsappIcon = document.createElement("i");
+    whatsappIcon.className = "fa-brands fa-whatsapp";
+    orderButton.append(whatsappIcon, document.createTextNode(" Pedir por WhatsApp"));
+
+    info.append(name, price, description, orderButton);
+    card.append(imageContainer, info);
+
+    return card;
+}
+
+function renderProducts(products) {
+    productsGrid.replaceChildren();
+
+    if (products.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "catalog-empty";
+        emptyMessage.textContent = "Estamos preparando nuevos productos.";
+        productsGrid.append(emptyMessage);
+        return;
+    }
+
+    products.forEach((product) => {
+        const requiredFields = ["image", "name", "description", "price", "whatsappUrl"];
+        const missingField = requiredFields.find((field) => (
+            typeof product[field] !== "string" || product[field].trim() === ""
+        ));
+
+        if (missingField) {
+            throw new Error(`Falta el campo "${missingField}" en un producto del catÃ¡logo.`);
+        }
+
+        productsGrid.append(createProductCard(product));
+    });
+}
+
+function showCatalogError(message) {
+    const error = document.createElement("p");
+    error.className = "catalog-error";
+    error.setAttribute("role", "alert");
+    error.textContent = message;
+    productsGrid.replaceChildren(error);
+}
+
+async function loadProducts() {
+    const config = window.supabaseConfig;
+    const hasSupabaseConfig = config && config.url && config.anonKey;
+
+    if (!hasSupabaseConfig) {
+        const products = window.servicesData && window.servicesData.products;
+        if (!Array.isArray(products)) {
+            throw new Error("No se encontrÃ³ una lista vÃ¡lida de productos en services-data.js.");
+        }
+        renderProducts(products);
+        return;
+    }
+
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+        throw new Error("No se pudo cargar Supabase. Revisa tu conexiÃ³n a internet e intÃ©ntalo de nuevo.");
+    }
+
+    const client = window.supabase.createClient(config.url, config.anonKey);
+    const { data, error } = await client
+        .from("products")
+        .select("image, name, description, price, whatsapp_url, tag")
+        .order("sort_order", { ascending: true });
+
+    if (error) {
+        throw new Error(`No se pudo cargar el catÃ¡logo: ${error.message}`);
+    }
+
+    renderProducts(data.map((product) => ({
+        ...product,
+        whatsappUrl: product.whatsapp_url
+    })));
+}
+
+loadProducts().catch((error) => {
+    console.error(error);
+    showCatalogError("No pudimos cargar el catÃ¡logo en este momento. Intenta de nuevo mÃ¡s tarde.");
+});
+
+</archivo>
+<archivo nombre="services-data.js">
+// Edit the product image, name, description, price and WhatsApp order link here.
+window.servicesData = {
+    products: [
+        {
+            image: "colcha.jfif",
+            name: 'Kiruto "MUYÃ‹"',
+            description: "Colcha confeccionada con retazos de tela con estampado exclusivo de alta densidad.",
+            price: "$2,650 MXN",
+            whatsappUrl: "https://wa.me/525550648075?text=Hola!%20Me%20interesa%20comprar%20la%20Colcha%20MuyÃ«",
+            tag: "Nuevo"
+        },
+        {
+            image: "monedero.jfif",
+            name: 'Monedero "Saifu"',
+            description: "Cartera/monedero de diseÃ±o tradicional y Ãºnico.",
+            price: "$380 MXN",
+            whatsappUrl: "https://wa.me/525550648075?text=Hola!%20Me%20interesa%20comprar%20el%20Monedero%20Sakura%20Cyber"
+        },
+        {
+            image: "6.png",
+            name: 'Las trianguladas "Upcycle textile collection"',
+            description: "AKARI. Bolsita artesanal inspirada en el diseÃ±o japonÃ©s que evoca la tradicional kinchaku. Confeccionada con telas reutilizadas, Explora el color, las formas geomÃ©tricas y los detalles textiles.Esta pieza cuenta con ocho presillas de tela para el cordÃ³n de cierre.",
+            price: "$1,190 MXN",
+            whatsappUrl: "https://wa.me/525550648075?text=Hola!%20Me%20interesa%20comprar%20la%20bolsita%20Akari"
+        },
+        {
+            image: "7.png",
+            name: 'Bolsita "Kinchaku"',
+            description: "Bolsita para monedas, un amuleto de la suerte o una cajita para regalar joyas. TÃ©cnica tradicional de plegado y costura",
+            price: "$370 MXN",
+            whatsappUrl: "https://wa.me/525550648075?text=Hola!%20Me%20interesa%20comprar%20la%20bolsita%20kinchaku"
+        }
+    ]
+};
+
+</archivo>
+<archivo nombre="style.css">
+/* ==========================================
+   RESET & VARIABLES
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Numbskull';
+    src: url('Numbskull/Numbskull.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --bg-main: #0d0d11;
+    --bg-card: #16161e;
+    --accent: #ff4a8d;
+    --accent-hover: #e03875;
+    --whatsapp-color: #25d366;
+    --whatsapp-hover: #1eae53;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b2;
+    --border-color: #262635;
+    --font-heading: 'New Tegomin', serif;
+    --font-body: 'New Tegomin', serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    position: relative;
+    isolation: isolate;
+    background-color: white;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: clip;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('real.jpeg') center top / 100% auto repeat-y;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ==========================================
+   NAVBAR
+   ========================================== */
+/* --- BARRA DE NAVEGACIÃ“N GENERAL (DiseÃ±o de 3 columnas para centrar el logo) --- */
+.navbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* Columna izq, centro automÃ¡tico para el logo, columna der */
+    align-items: center;
+    width: 100%;
+    padding: 10px 30px;
+    background-color: rgba(223, 247, 229, 0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --- MENÃš HAMBURGUESA (Ubicado en la columna 1: Izquierda) --- */
+.menu-toggle {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 9px;
+    border: 1px solid rgba(74, 110, 24, 0.6);
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(74, 110, 24, 1);
+}
+
+/* --- LOGO (Ubicado en la columna 2: Centro) --- */
+.logo {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+}
+
+.logo a {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Reducido para evitar desbordamientos, ajÃºstalo si lo necesitas */
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo img {
+    height: 2em;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo span {
+    color: var(--accent);
+    margin-left: 5px;
+    font-weight: 100;
+    font-size: 3rem;
+    line-height: 1.5;
+    display: inline-block;
+    transform: translateY(2px);
+}
+
+/* --- BOTÃ“N DE INSTAGRAM (Ubicado en la columna 3: Derecha) --- */
+.ig-link {
+    position: relative;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end; /* Lo manda por completo a la derecha */
+    color: white;
+    background-color: rgba(74, 110, 24, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(74, 110, 24, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.ig-link::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: 100%;
+    z-index: -1;
+    width: 35%;
+    height: 220%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.18) 35%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0.18) 65%,
+        transparent
+    );
+    filter: blur(1px);
+    transform: skewX(-25deg);
+    animation: secondary-shine 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.ig-link:hover {
+    background-color: rgba(74, 110, 24, 0.7);
+    color: #fff;
+}
+
+/* --- ENLACES DE NAVEGACIÃ“N / MENÃš DESPLEGABLE --- */
+.nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none; /* Oculto por defecto, se muestra con la clase .is-open mediante JS */
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: rgba(223, 247, 229, 0.98);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+}
+
+.nav-links.is-open {
+    display: flex;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    justify-content: center;
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+/* ==========================================
+   HERO SECTION
+   ========================================== */
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 1rem 0.5rem;
+}
+
+.hero-content {
+    max-width: 700px;
+}
+
+.badge {
+    background-color: #222530; /* El tono oscuro que se ve en tu imagen */
+    color: rgba(74, 110, 24, 1);
+    font-size: 1.8rem; /* Al aumentar este valor, la altura del badge crecerÃ¡ sola */
+    
+    /* El primer nÃºmero (ej. 1rem) controla el espacio superior e inferior (altura) */
+    /* El segundo nÃºmero (ej. 2.5rem) controla el espacio lateral (ancho) */
+    padding: 1rem 3rem; 
+    
+    border-radius: 50px; /* Mantiene los bordes completamente redondeados */
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    font-weight: 600;
+    
+    display: inline-block; /* Obligatorio para que la caja respete los paddings y crezca */
+    line-height: 1.2; /* Asegura una proporciÃ³n vertical correcta con el texto */
+}
+
+.hero-content > span.badge,
+.hero-content a.badge[href] {
+    border: 3px solid transparent;
+    background:
+        linear-gradient(#222530, #222530) padding-box,
+        conic-gradient(from var(--a), #4a6e18, #dff7e5, #4a6e18) border-box;
+    animation: spin 4s linear infinite;
+}
+
+.hero h1 {
+    font-family: 'Numbskull', sans-serif;
+    color: rgba(0, 0, 0, 0.753);
+    font-size: 3.5rem;
+    margin: 1.5rem 0 1rem;
+    line-height: 1.1;
+    font-weight: 600;
+}
+
+.hero h1 span {
+    color: rgba(74, 110, 24, 1);
+}
+
+.hero p {
+    color: rgba(0, 0, 0, 1);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1;
+    font-weight: bolder;
+}
+
+/* 1. Definimos la propiedad personalizada para que el navegador sepa animar el Ã¡ngulo */
+@property --a {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* 2. Definimos la animaciÃ³n de giro continuo */
+@keyframes spin {
+    to {
+        --a: 360deg;
+    }
+}
+
+/* 3. Estilos actualizados para tu botÃ³n principal con el borde animado */
+.btn-primary {
+    display: inline-block;
+    position: relative;
+    color: rgba(74, 110, 24, 1);
+    padding: 0.9rem 2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 1;
+    
+    /* Fondo interior negro y degradado cÃ³nico giratorio en el borde */
+    background: linear-gradient(black, black), 
+                conic-gradient(from var(--a), #4a6e18, #dff7e5, #4a6e18);
+    
+    background-clip: padding-box, border-box;
+    -webkit-background-clip: padding-box, border-box;
+    
+    background-origin: border-box;
+    
+    /* Grosor del borde transparente para dejar ver el degradado giratorio */
+    border: 5px solid transparent; 
+    
+    /* Aplicamos la animaciÃ³n */
+    animation: spin 4s linear infinite;
+    
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(74, 110, 24, 0.3); 
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-content > span.badge,
+    .hero-content a.badge[href],
+    .btn-primary,
+    .product-card,
+    .btn-secondary::before,
+    .ig-link::before {
+        animation: none;
+    }
+}
+
+
+/* ==========================================
+   PRODUCTOS
+   ========================================== */
+.products-section {
+    padding: 0.5rem 8% 5rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.section-title h2 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.section-title p {
+    color: rgba(0, 0, 0, 1);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1;
+    font-weight: bolder;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    justify-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%
+}
+
+.products-grid > * {
+    width: 100%;
+    min-width: 0; 
+}
+
+.catalog-error {
+    grid-column: 1 / -1;
+    color: #a32121;
+    text-align: center;
+}
+
+.catalog-empty {
+    grid-column: 1 / -1;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.product-card {
+    width: 32rem;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 4px solid transparent;
+    background:
+        linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+        conic-gradient(from var(--a), #4a6e18, #dff7e5, #4a6e18) border-box;
+    animation: spin 4s linear infinite;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex: 0 0 75%;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(74, 110, 24, 1);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.product-info {
+    min-height: 0;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 25%;
+    overflow: visible;
+    flex-grow: 1;
+    height: auto;
+}
+
+.product-info h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+    margin-bottom: 0.25rem;
+}
+
+.product-info .price {
+    font-size: 1.1rem;
+    line-height: 1.2;
+    font-weight: 700;
+    color: rgba(74, 110, 24, 1);
+    margin-bottom: 0.25rem;
+}
+
+.product-info .description {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    margin-bottom: 0.5rem;
+    flex-grow: 1;
+}
+
+.btn-ws {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--whatsapp-color);
+    color: #fff;
+    padding: 0.55rem;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-ws:hover {
+    background-color: var(--whatsapp-hover);
+}
+
+/* ==========================================
+   ABOUT SECTION
+   ========================================== */
+.about-section {
+    background-color: rgba(22, 22, 30, 0.76);
+    padding: 5rem 8%;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.about-container {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-container h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.about-container h2 span {
+    font-family: 'Numbskull', sans-serif;
+}
+
+.about-container p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height:1.5;
+    font-weight: bolder;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 1.8rem;
+    border-radius: 20px;
+    overflow: hidden;
+    isolation: isolate;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: 100%;
+    z-index: -1;
+    width: 35%;
+    height: 220%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.18) 35%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0.18) 65%,
+        transparent
+    );
+    filter: blur(1px);
+    transform: skewX(-25deg);
+    animation: secondary-shine 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes secondary-shine {
+    to {
+        transform: translateX(-400%) skewX(-25deg);
+    }
+}
+
+.btn-secondary:hover {
+    background-color: #9c9999;
+    color: #000;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+footer {
+    width: 100%;
+    background-color: var(--bg-main);
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ==========================================
+   WHATSAPP FLOAT
+   ========================================== */
+.whatsapp-float {
+    position: fixed;
+    bottom: 80px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--whatsapp-color);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 2000;
+    text-decoration: none;
+    transition: var(--transition);
+    animation: pulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: var(--whatsapp-hover);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 768px) {
+    .navbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        min-height: 64px;
+        padding: 0.5rem 1rem;
+    }
+
+    .menu-toggle {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        padding: 9px;
+        border: 1px solid rgba(74, 110, 24, 0.6);
+        border-radius: 10px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .menu-toggle span {
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background: rgba(74, 110, 24, 1);
+    }
+
+    .logo {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .logo img {
+        height: 3.5rem;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        background-color: rgba(223, 247, 229, 0.98);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-links.is-open {
+        display: flex;
+    }
+
+    .nav-links a {
+        min-height: 44px;
+        justify-content: center;
+    }
+
+    .ig-link {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+        padding: 0.45rem 0.6rem;
+        font-size: 0.82rem;
+    }
+
+    .ig-link i {
+        font-size: 1rem;
+	padding: 0.3rem 0rem;
+    }
+
+    .hero {
+        padding: 2rem 1.25rem 0.25rem;
+    }
+
+    .hero-content {
+        max-width: 34rem;
+    }
+
+    .badge {
+        /* Mantenemos tus valores base intactos para que el badge mida exactamente igual */
+        font-size: 2rem; 
+        padding: 0.5rem 1.5rem;
+        letter-spacing: 1.5px;
+        line-height: 1;
+        width: auto;
+        
+        /* MAGIA AQUÃ: Esto agranda visualmente el badge (texto incluido) un 20% o 30% 
+           sin cambiar el tamaÃ±o real de su caja ni alterar el diseÃ±o de alrededor */
+        transform: scale(1.3); /* Puedes probar con 1.15 o 1.25 segÃºn lo grande que lo quieras */
+        transform-origin: center; /* Asegura que crezca desde el centro */
+        display: inline-block;
+        margin: 10px 0; /* Un pequeÃ±o margen por si el efecto visual roba un poco de espacio con los elementos vecinos */
+    }
+
+    .hero h1 {
+        font-size: clamp(2.1rem, 9vw, 2.8rem);
+    }
+
+    .hero p {
+        font-size: 1.05rem;
+    }
+
+    .products-section {
+        padding: 0.25rem 5% 3.5rem;
+    }
+
+    .about-section {
+        padding: 3.5rem 5%;
+    }
+
+    .section-title {
+        margin-bottom: 2rem;
+    }
+
+    .section-title h2 {
+        font-size: 2rem;
+        position: relative;
+        top: -0.4rem;
+        margin-bottom: 0.35rem;
+    }
+    .section-title p {
+        font-size: 1.05rem;
+    }
+
+    .products-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-rows: auto;
+        gap: 1.25rem;
+    }
+
+    .product-card {
+        width: 100%;
+        max-width: 32rem;
+    }
+
+    .product-image {
+        flex: 0 0 auto;
+    }
+
+    .product-image img {
+        display: block;
+        height: auto;
+    }
+
+    .product-info {
+        flex: 0 0 auto;
+    }
+
+    .whatsapp-float {
+        width: 54px;
+        height: 54px;
+        right: max(16px, env(safe-area-inset-right));
+        bottom: max(80px, env(safe-area-inset-bottom));
+        font-size: 26px;
+    }
+
+    footer {
+        padding: 1.5rem 5%;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero {
+        min-height: 46svh;
+        padding-inline: 1rem;
+    }
+
+    .badge {
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+    }
+
+    .products-section,
+    .about-section {
+        padding-inline: 1rem;
+    }
+
+    .product-info {
+        padding: 1.15rem;
+    }
+
+    .about-container h2 {
+        font-size: 1.75rem;
+    }
+}
+
+</archivo>
+<archivo nombre="supabase-config.js">
+window.supabaseConfig = {
+    url: "https://qzqbkutvkkbnzidnsrku.supabase.co", // Corregido con 'g'
+    anonKey: "sb_publishable_KJKIfqMVIwSM1IXGnrIZLw_6-3CP6bA"
+};
+
+// Crear la instancia global que admin.js estÃ¡ buscando
+const { createClient } = window.supabase;
+window.supabaseClient = createClient(
+    window.supabaseConfig.url, 
+    window.supabaseConfig.anonKey
+);
+
+</archivo>
+</proyecto>
